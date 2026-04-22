@@ -1,0 +1,45 @@
+# Docker Compose version
+version: "3.8"
+
+services:
+
+  # --- FastAPI + LangGraph Agent container ---
+  api:
+    # Build from the Dockerfile in the current directory
+    build: .
+
+    # Map port 8000 on your machine to port 8000 inside the container
+    ports:
+      - "8000:8000"
+
+    # Load environment variables from .env into the container
+    # This includes OPENAI_API_KEY and LANGCHAIN_API_KEY
+    env_file:
+      - .env
+
+    # Mount the chroma_db folder as a volume so embeddings
+    # persist across container restarts without rebuilding
+    volumes:
+      - chroma_data:/app/chroma_db
+
+    # Mount the docs folder so you can add PDFs without rebuilding
+    # Any PDF added to ./docs on your machine appears inside the container
+      - ./docs:/app/docs
+
+    # Always restart the container if it crashes
+    restart: always
+
+    # Connect to the shared network
+    networks:
+      - agent_network
+
+# Named volume for ChromaDB persistence
+# Without this, all embeddings are lost when the container stops
+volumes:
+  chroma_data:
+
+# Shared network for all containers
+# Allows future containers (e.g. PostgreSQL) to communicate with the API
+networks:
+  agent_network:
+    driver: bridge

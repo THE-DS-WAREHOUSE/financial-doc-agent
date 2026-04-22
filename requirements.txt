@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+langgraph
+langchain
+langchain-openai
+langchain-community
+langchain-experimental
+langchain-huggingface
+langsmith
+pydantic-ai
+chromadb
+sentence-transformers
+pypdf
+python-dotenv
+fpdf2
